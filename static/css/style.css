@@ -1,0 +1,18 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+h1 {
+    color: #333;
+}
+.flashes {
+    color: red;
+    list-style: none;
+}
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+}
