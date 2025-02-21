@@ -2,27 +2,55 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>領収書OCRアップロード</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>領収書OCRアップロード</h1>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class="flashes">
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="receipt">領収書の画像を選択してください:</label>
-            <br>
-            <input type="file" name="receipt" id="receipt" accept="image/*,application/pdf">
+    <div class="container">
+        <h1>領収書OCRアップロード</h1>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" class="upload-form">
+            <div class="form-group">
+                <label for="receipt">領収書の画像を選択してください:</label>
+                <br>
+                <input type="file" name="receipt" id="receipt" accept="image/*,application/pdf" required>
+            </div>
+
+            <div class="form-group">
+                <label for="excel_file">既存のExcelファイルを選択（新規作成する場合は選択不要）:</label>
+                <select name="excel_file" id="excel_file">
+                    <option value="">新規作成</option>
+                    {% for file in excel_files %}
+                        <option value="{{ file }}">{{ file }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn">アップロード</button>
+        </form>
+
+        {% if excel_files %}
+        <div class="excel-files">
+            <h2>生成されたExcelファイル</h2>
+            <ul>
+                {% for file in excel_files %}
+                <li>
+                    {{ file }}
+                    <a href="{{ url_for('download_file', filename=file) }}" class="download-btn">ダウンロード</a>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
-        <button type="submit">アップロード</button>
-    </form>
+        {% endif %}
+    </div>
 </body>
 </html>
