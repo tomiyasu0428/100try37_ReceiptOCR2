@@ -36,10 +36,14 @@ def create_excel_receipt(data, output_path):
     領収書データをExcelファイルに出力
 
     Parameters:
-    data: 領収書情報の辞書 {"発行日": "2024/02/21", "支払先名": "株式会社〇〇", ...}
+    data: 領収書情報のリストまたは辞書
     output_path: 出力先のExcelファイルパス
     """
     try:
+        # データが辞書の場合はリストに変換
+        if isinstance(data, dict):
+            data = [data]
+
         # 既存のExcelファイルがあれば読み込み、なければ新規作成
         try:
             wb = load_workbook(output_path)
@@ -64,14 +68,16 @@ def create_excel_receipt(data, output_path):
         # 新しいデータの追加
         current_row = ws.max_row + 1 if os.path.exists(output_path) else 2
 
-        # データを追加
-        ws.cell(row=current_row, column=1, value=start_id).alignment = alignment
-        ws.cell(row=current_row, column=2, value=data.get('発行日', '')).alignment = alignment
-        ws.cell(row=current_row, column=3, value=data.get('支払先名', '')).alignment = alignment
-        ws.cell(row=current_row, column=4, value=data.get('金額', '')).alignment = alignment
-        ws.cell(row=current_row, column=5, value=data.get('インボイス番号', '')).alignment = alignment
+        # 複数のデータを追加
+        for item in data:
+            ws.cell(row=current_row, column=1, value=start_id).alignment = alignment
+            ws.cell(row=current_row, column=2, value=item.get('発行日', '')).alignment = alignment
+            ws.cell(row=current_row, column=3, value=item.get('支払先名', '')).alignment = alignment
+            ws.cell(row=current_row, column=4, value=item.get('金額', '')).alignment = alignment
+            ws.cell(row=current_row, column=5, value=item.get('インボイス番号', '')).alignment = alignment
 
-        start_id += 1
+            start_id += 1
+            current_row += 1
 
         # 列幅の自動調整
         for col in range(1, 6):
