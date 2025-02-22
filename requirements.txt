@@ -8,3 +8,4 @@ openpyxl
 google-generativeai>=0.3.2
 Pillow
 python-dotenv
+gunicorn==20.1.0
